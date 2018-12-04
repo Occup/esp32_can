@@ -86,7 +86,7 @@ typedef union {
         {
             if (pos < 0 || pos > 63) return 0;
             int bitFieldIdx = pos / 8;
-            return (bitField[bitFieldIdx] >> pos) & 1;
+            return ( bitField[bitFieldIdx] >> (pos & 7) ) & 1;
         }
         BitRef operator[]( int pos )
         {
@@ -108,16 +108,16 @@ typedef union {
     int8_t  int8[64];
 
     struct {
-        uint64_t bitField[64];
+        uint8_t bitField[64];
         const bool operator[]( int pos ) const
         {
-            if (pos < 0 || pos > 319) return 0;
+            if (pos < 0 || pos > 511) return 0;
             int bitfieldIdx = pos / 8;
-            return (bitField[bitfieldIdx] >> pos) & 1;
+            return ( bitField[bitfieldIdx] >> (pos & 7) ) & 1;
         }
         BitRef operator[]( int pos )
         {
-            if (pos < 0 || pos > 319) return BitRef((uint8_t *)&bitField[0], 0);
+            if (pos < 0 || pos > 511) return BitRef((uint8_t *)&bitField[0], 0);
             uint8_t *ptr = (uint8_t *)&bitField[0]; 
             return BitRef(ptr + (pos / 8), pos & 7);
         }
